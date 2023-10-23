@@ -7,12 +7,14 @@
 - Todo: setup remote backend to store tf state
 ```shell
 # update: terraform.tfvars
+cd terraform
 export AWS_ACCESS_KEY_ID=
 export AWS_SECRET_ACCESS_KEY=
 terraform validate
 terraform apply
 ```
 ```shell
+cd terraform
 export AWS_ACCESS_KEY_ID=
 export AWS_SECRET_ACCESS_KEY=
 terraform destroy
