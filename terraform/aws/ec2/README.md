@@ -21,7 +21,11 @@ terraform destroy
 ## Cost Estimation
 ```shell
 # first time: infracost auth login
+# cost of total deployment
 infracost breakdown --path=./terraform --format=json --out-file=infracost-usage.json
+```
+```shell
+# change in cost due to change in resources
 infracost diff --path=./terraform --compare-to infracost-usage.json
 ```
 
