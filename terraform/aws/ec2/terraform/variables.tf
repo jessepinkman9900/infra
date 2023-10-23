@@ -3,3 +3,8 @@ variable "instance_name" {
   type        = string
   default     = "ApiServer"
 }
+
+variable "ec2_public_key" {
+  description = "SSH pubic key to add to EC2 instance known_hosts"
+  type        = string
+}
