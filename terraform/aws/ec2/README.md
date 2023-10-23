@@ -40,7 +40,7 @@ infracost diff --path=./terraform --compare-to infracost-usage.json
 - s3:PutObject
 - s3: DeleteObject
 
-## Terratest
+## [Terratest](https://terratest.gruntwork.io/docs/)
 ```shell
 cd test
 export AWS_ACCESS_KEY_ID=
@@ -48,7 +48,7 @@ export AWS_SECRET_ACCESS_KEY=
 go test -v
 ```
 
-## Visualisation
+## [Visualisation](https://github.com/im2nguyen/rover)
 ```shell
 cd terraform
 # set IAM creds in .env
