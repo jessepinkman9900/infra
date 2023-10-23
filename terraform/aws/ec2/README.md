@@ -33,3 +33,11 @@ infracost diff --path=./terraform --compare-to infracost-usage.json
 - s3:GetObject
 - s3:PutObject
 - s3: DeleteObject
+
+## Terratest
+```shell
+cd test
+export AWS_ACCESS_KEY_ID=
+export AWS_SECRET_ACCESS_KEY=
+go test -v
+```
