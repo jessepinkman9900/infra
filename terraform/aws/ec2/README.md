@@ -41,3 +41,11 @@ export AWS_ACCESS_KEY_ID=
 export AWS_SECRET_ACCESS_KEY=
 go test -v
 ```
+
+## Visualisation
+```shell
+cd terraform
+# set IAM creds in .env
+docker run --rm -it -p 9000:9000 -v "$(pwd):/src" --env-file ./.env im2nguyen/rover:v0.3.3
+# see vis on http://localhost:9000
+```
