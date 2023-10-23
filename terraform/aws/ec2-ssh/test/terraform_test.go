@@ -18,6 +18,7 @@ func TestTerraform(t *testing.T) {
 
 	// Get the IP of the instance
 	instanceName := terraform.Output(t, terraformOptions, "instance_name")
+	// todo: test ssh ingress rule
 
 	// Verify that we get back the right instance name
 	assert.Equal(t, "ApiServer", instanceName)
