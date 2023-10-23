@@ -20,7 +20,7 @@ export AWS_SECRET_ACCESS_KEY=
 terraform destroy
 ```
 
-## Cost Estimation
+## [Cost Estimation](https://www.infracost.io/docs/)
 ```shell
 # first time: infracost auth login
 # cost of total deployment
