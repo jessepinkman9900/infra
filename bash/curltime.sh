@@ -1,5 +1,10 @@
 #!/bin/bash
 
+########
+# USAGE
+# 1. ./curltime.sh uri
+########
+
 curl -w @- -o /dev/null -s "$@" <<'EOF'
     time_namelookup:  %{time_namelookup}\n
        time_connect:  %{time_connect}\n
