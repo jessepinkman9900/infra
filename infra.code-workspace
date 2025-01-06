@@ -1,14 +1,20 @@
 {
-	"folders": [
-		{
-			"path": "."
-		},
-		{
-			"path": "pulumi-python/clickhouse",
-			"settings": {
-				"python.defaultInterpreterPath": ".venv/bin/python"
-			}
-		}
-	],
-	"settings": {}
+  "folders": [
+    {
+      "path": ".github/workflows"
+    },
+    {
+      "path": "."
+    },
+    {
+      "path": "pulumi-python/clickhouse",
+      "settings": {
+        "python.defaultInterpreterPath": ".venv/bin/python"
+      }
+    },
+    {
+      "path": "realtime-data-streaming"
+    },
+  ],
+  "settings": {}
 }
