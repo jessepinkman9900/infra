@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "pulumi-python/clickhouse",
+			"settings": {
+				"python.defaultInterpreterPath": ".venv/bin/python"
+			}
+		}
+	],
+	"settings": {}
+}
