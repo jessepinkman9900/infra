@@ -1,0 +1,108 @@
+name: deploy-destroy-infra
+on:
+  workflow_dispatch:
+    inputs:
+      type:
+        description: 'Type of deployment'
+        required: true
+        type: choice
+        options:
+          - create
+          - destroy
+      resource:
+        description: 'Resource to deploy'
+        required: true
+        type: choice
+        options:
+          - clickhouse-db
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        type: choice
+        options:
+          - test
+          - stage
+          - prod
+      prefix:
+        description: 'naming prefix for test environment'
+        required: false
+        type: string
+jobs:
+  deploy-clickhouse-db:
+    runs-on: ubuntu-24.04
+    if: github.event.inputs.resource == 'clickhouse-db' && github.event.inputs.type == 'create'
+    steps:
+      - uses: trstringer/manual-approval@v1
+        with:
+          secret: ${{ github.TOKEN }}
+          approvers: jessepinkman9900
+          minimum-approvals: 1
+          issue-title: "Deploy clickhouse-db in ${{ github.event.inputs.environment }} environment"
+          issue-body: "Please approve or deny the deployment of clickhouse-db in ${{ github.event.inputs.environment }} environment"
+          exclude-workflow-initiator-as-approver: false
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: "./pulumi-python/clickhouse/uv.lock"
+      - uses: actions/setup-python@v5
+        with:
+          python-version-file: "./pulumi-python/clickhouse/pyproject.toml"
+      - name: install dependencies
+        run: |
+          cd pulumi-python/clickhouse
+          uv sync --all-extras --dev
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.23"
+      - uses: mscno/setup-goose@v1
+        with:
+          version: v3.24.0
+      - uses: pulumi/actions@v6
+        with:
+          command: up
+          stack-name: ${{ github.event.inputs.environment }}
+          work-dir: pulumi-python/clickhouse
+          comment-on-pr: true
+          comment-on-summary: true
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+          CLICKHOUSE_ORG_ID: ${{ vars.CLICKHOUSE_ORG_ID }}
+          CLICKHOUSE_TOKEN_KEY: ${{ vars.CLICKHOUSE_TOKEN_KEY }}
+          CLICKHOUSE_TOKEN_SECRET: ${{ secrets.CLICKHOUSE_TOKEN_SECRET }}
+  destroy-clickhouse-db:
+    runs-on: ubuntu-24.04
+    if: github.event.inputs.resource == 'clickhouse-db' && github.event.inputs.type == 'destroy'
+    steps:
+      - uses: trstringer/manual-approval@v1
+        with:
+          secret: ${{ github.TOKEN }}
+          approvers: jessepinkman9900
+          minimum-approvals: 1
+          issue-title: "Destroy clickhouse-db in ${{ github.event.inputs.environment }} environment"
+          issue-body: "Please approve or deny the deployment of clickhouse-db in ${{ github.event.inputs.environment }} environment"
+          exclude-workflow-initiator-as-approver: false
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: "./pulumi-python/clickhouse/uv.lock"
+      - uses: actions/setup-python@v5
+        with:
+          python-version-file: "./pulumi-python/clickhouse/pyproject.toml"
+      - name: install dependencies
+        run: |
+          cd pulumi-python/clickhouse
+          uv sync --all-extras --dev
+      - uses: pulumi/actions@v6
+        with:
+          command: destroy
+          stack-name: ${{ github.event.inputs.environment }}
+          work-dir: pulumi-python/clickhouse
+          comment-on-pr: true
+          comment-on-summary: true
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+          CLICKHOUSE_ORG_ID: ${{ vars.CLICKHOUSE_ORG_ID }}
+          CLICKHOUSE_TOKEN_KEY: ${{ vars.CLICKHOUSE_TOKEN_KEY }}
+          CLICKHOUSE_TOKEN_SECRET: ${{ secrets.CLICKHOUSE_TOKEN_SECRET }}
