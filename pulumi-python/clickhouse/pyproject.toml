@@ -1,0 +1,12 @@
+[project]
+name = "clickhouse"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "pulumi-random>=4.16.8",
+    "pulumi>=3.144.1",
+    "pulumiverse-clickhouse>=1.0.1",
+    "pulumi-command>=1.0.1",
+]

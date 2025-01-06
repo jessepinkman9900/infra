@@ -1,0 +1,8 @@
+[tools]
+pre-commit = "4.0.1"
+uv = "0.5.10"
+ruff = "0.8.4"
+pulumi = "3.144.1"
+terraform = "1.10.3"
+infracost = "0.10.40"
+go = "1.23"

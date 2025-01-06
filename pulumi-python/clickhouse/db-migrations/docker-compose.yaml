@@ -1,0 +1,22 @@
+services:
+  clickhouse:
+    image: clickhouse/clickhouse-server:24.8
+    container_name: clickhouse-server
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    volumes:
+      - ./.clickhouse-data:/var/lib/clickhouse
+    environment:
+      CLICKHOUSE_USER: "default_user"
+      CLICKHOUSE_PASSWORD: "default_password"
+      CLICKHOUSE_DB: "default"
+  ch-ui:
+    image: ghcr.io/caioricciuti/ch-ui:latest
+    restart: always
+    ports:
+      - "5521:5521"
+    environment:
+      VITE_CLICKHOUSE_URL: "http://localhost:8123"
+      VITE_CLICKHOUSE_USER: "default_user"
+      VITE_CLICKHOUSE_PASS: "default_password"

@@ -1,0 +1,16 @@
+config:
+  # naming
+  naming:prefix: pr1
+  # clickhouse
+  # chouse:tier: development
+  chouse:tier: production
+  chouse:provider: aws
+  chouse:region: ap-northeast-1
+  chouse:num_replicas: 3
+  # memory = (size per replica * num_replicas)
+  chouse:min_total_memory_gb: 24
+  chouse:max_total_memory_gb: 24
+  chouse:idle_timeout_minutes: 5
+  # db-migrations - needs goose installed on local machine
+  db-migrations:apply: true
+  db-migrations:migrations_dir: ./db-migrations/migrations
