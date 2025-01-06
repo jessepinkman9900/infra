@@ -18,5 +18,6 @@ flowchart LR
 ```sh
 docker compose up -d
 # console - http://localhost:8080
+# maybe create topic - raw-allmids
 ```
 
