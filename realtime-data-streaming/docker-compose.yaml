@@ -5,6 +5,7 @@ networks:
 volumes:
   redpanda: null
 services:
+  # redpanda cluster + ui
   redpanda:
     image: docker.redpanda.com/redpandadata/redpanda:v${REDPANDA_VERSION:-24.3.2}
     container_name: redpanda
@@ -71,10 +72,11 @@ services:
       - redpanda_network
     depends_on:
       - redpanda
-  connect:
+  # source connector
+  source-connect:
     image: docker.redpanda.com/redpandadata/connect
-    hostname: connect
-    container_name: connect
+    hostname: source-connect
+    container_name: source-connect
     networks:
       - redpanda_network
     #platform: 'linux/amd64'
@@ -83,22 +85,49 @@ services:
     ports:
       - "8083:8083"
     volumes:
-      - ./connect.yaml:/connect.yaml
-    # environment:
-    #   CONNECT_CONFIGURATION: |
-    #       key.converter=org.apache.kafka.connect.converters.ByteArrayConverter
-    #       value.converter=org.apache.kafka.connect.converters.ByteArrayConverter
-    #       group.id=connectors-cluster
-    #       offset.storage.topic=_internal_connectors_offsets
-    #       config.storage.topic=_internal_connectors_configs
-    #       status.storage.topic=_internal_connectors_status
-    #       config.storage.replication.factor=-1
-    #       offset.storage.replication.factor=-1
-    #       status.storage.replication.factor=-1
-    #       offset.flush.interval.ms=1000
-    #       producer.linger.ms=50
-    #       producer.batch.size=131072
-    #   CONNECT_BOOTSTRAP_SERVERS: redpanda:9092
-    #   CONNECT_GC_LOG_ENABLED: "false"
-    #   CONNECT_HEAP_OPTS: -Xms512M -Xmx512M
-    #   CONNECT_LOG_LEVEL: info
+      - ./source-connect.yaml:/connect.yaml
+  # sink connector
+  sink-connect:
+    image: docker.redpanda.com/redpandadata/connect
+    hostname: sink-connect
+    container_name: sink-connect
+    networks:
+      - redpanda_network
+    depends_on:
+      - redpanda
+      - clickhouse
+    ports:
+      - "8084:8083"
+    volumes:
+      - ./sink-connect.yaml:/connect.yaml
+  # clickhouse
+  clickhouse:
+    image: clickhouse/clickhouse-server:24.8
+    container_name: clickhouse
+    hostname: clickhouse
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    volumes:
+      - ./.clickhouse-data:/var/lib/clickhouse
+      - ./clickhouse-init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      CLICKHOUSE_USER: "default_user"
+      CLICKHOUSE_PASSWORD: "default_password"
+      CLICKHOUSE_DB: "default"
+    networks:
+      - redpanda_network
+  ch-ui:
+    image: ghcr.io/caioricciuti/ch-ui:latest
+    container_name: ch-ui
+    restart: always
+    ports:
+      - "5521:5521"
+    environment:
+      VITE_CLICKHOUSE_URL: "http://localhost:8123"
+      VITE_CLICKHOUSE_USER: "default_user"
+      VITE_CLICKHOUSE_PASS: "default_password"
+    networks:
+      - redpanda_network
+    depends_on:
+      - clickhouse
